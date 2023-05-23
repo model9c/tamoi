@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:tomato_record/router/locations.dart';
-import 'package:tomato_record/screens/auth_screen.dart';
+import 'package:tomato_record/screens/start_screen.dart';
 import 'package:tomato_record/screens/home_screen.dart';
 import 'package:tomato_record/screens/splash_screen.dart';
 import 'package:tomato_record/utils/logger.dart';
@@ -23,37 +24,50 @@ import 'package:tomato_record/utils/logger.dart';
   )
 );*/
 
-final _routerDelegate = GoRouter(
-  // refreshListenable
-  routes: [
-    GoRoute(name: 'home', path: '/', builder: (context, state) => HomeScreen())
-  ],
-);
+final _router = GoRouter(
+    routes: [
+      GoRoute(
+          name: "home", path: "/", builder: (context, state) => HomeScreen()),
+      GoRoute(
+          name: "auth",
+          path: "/auth",
+          builder: (context, state) => StartScreen()),
+    ],
+    // refreshListenable: _userNotifier,
+    redirect: (state) {
+      final currentPath = state.subloc == '/auth';
+      final userState = _userNotifier.user;
+      if (userState == null && !currentPath) {
+        return '/auth';
+      }
+      if (userState != null && currentPath) {
+        return "/";
+      }
+      return null;
+    });
 
-void main(){
+void main() {
   logger.d('My first Logger!!');
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget{
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.delayed(const Duration(seconds: 3), () => 100),
-      builder: (context, snapshot) {
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: _splashLoadingWidget(snapshot)
-        );
-      }
-    );
+        future: Future.delayed(const Duration(milliseconds: 300), () => 100),
+        builder: (context, snapshot) {
+          return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: _splashLoadingWidget(snapshot));
+        });
   }
 
   StatelessWidget _splashLoadingWidget(AsyncSnapshot<Object?> snapshot) {
-    if(snapshot.hasError){
+    if (snapshot.hasError) {
       print('error occur while loading.');
       return const Text('error occur.');
-    } else if(snapshot.hasData) {
+    } else if (snapshot.hasData) {
       return const TamoiApp();
     } else {
       return const SplashScreen();
@@ -66,8 +80,32 @@ class TamoiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      theme: ThemeData(primarySwatch: Colors.amber),
+    return MultiProvider(
+      providers: [
+        // ChangeNotifierProvider<UserNotifier>.value(value: _userNotifier)
+      ],
+      child: MaterialApp.router(
+        routeInformationProvider: _router.routeInformationProvider,
+        routeInformationParser: _router.routeInformationParser,
+        routerDelegate: _router.routerDelegate,
+        theme: ThemeData(
+          primarySwatch: Colors.amber,
+          fontFamily: 'Jalnan',
+          hintColor: Colors.grey[350],
+          textTheme: TextTheme(labelLarge: TextStyle(color: Colors.white)),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.red,
+              primary: Colors.white,
+              minimumSize: Size(48,48),
+            )
+          ),
+          appBarTheme: AppBarTheme(
+              backgroundColor: Colors.white,
+              titleTextStyle: TextStyle(color: Colors.black87),
+              elevation: 2),
+        ),
+      ),
     );
   }
 }
