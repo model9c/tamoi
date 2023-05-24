@@ -58,7 +58,7 @@ class _AuthPageState extends State<AuthPage> {
                         ),
                         SizedBox(width: common_sm_padding),
                         Text(
-                            '휴대폰 번호로 가입을 할 수 있습니다.\n번호는 안전하게 보관되며,\n외부에 공개하지 않습니다.'),
+                            '휴대폰 번호로 가입을 할 수 있습니다.\n해당 정보는 안전하게 보관되며,\n외부에 절대 공개하지 않습니다.'),
                       ],
                     ),
                     SizedBox(height: common_padding),

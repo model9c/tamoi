@@ -39,7 +39,7 @@ class IntroPage extends StatelessWidget {
                   height: imgSize,
                   child: Stack(
                     children: [
-                      ExtendedImage.asset('assets/img/carrot_intro.png'),
+                      ExtendedImage.asset('assets/imgs/carrot_intro.png'),
                       Positioned(
                           width: sizeofPosImg,
                           left: imgSize * 0.45,
@@ -47,7 +47,7 @@ class IntroPage extends StatelessWidget {
                           height: sizeofPosImg,
                           // 가운데 사이즈는 0.1(10%의 사이즈를 할당한다.
                           child: ExtendedImage.asset(
-                              'assets/img/carrot_intro_pos.png')),
+                              'assets/imgs/carrot_intro_pos.png')),
                       // left / top / right / bottom 옵션은 padding을 의미
                       // left - right - width // top - bottom - height  은 두개의 값만 줘야함 -> left + width (O) left + right + width (X)
                     ],
