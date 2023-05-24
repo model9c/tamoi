@@ -1,7 +1,9 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/constants/common_size.dart';
+import 'package:tomato_record/states/user_provider.dart';
 import 'package:tomato_record/utils/logger.dart';
+import 'package:provider/provider.dart';
 
 class IntroPage extends StatelessWidget {
   PageController controller;
@@ -10,6 +12,7 @@ class IntroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.d('current user state: ${context.read<UserProvider>().userState}');
     return LayoutBuilder(
       // 화면의 전체적인 레이아웃을 컨트롤 할 수 있다.
       builder: (context, constraints) {

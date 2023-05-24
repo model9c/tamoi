@@ -38,8 +38,9 @@ dependencies:
   extended_image: ^8.0.1  # 이미지 라이브러리
   logger: ^1.3.0
   go_router: ^7.1.1  # Navigator 2.0
-  provider: ^6.0.5
   flutter_multi_formatter: ^2.11.0
+  provider: ^6.0.5
+  firebase_auth: ^4.6.1
 
 dev_dependencies:
   flutter_test:

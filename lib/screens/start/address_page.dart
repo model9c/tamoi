@@ -31,6 +31,7 @@ class AddressPage extends StatelessWidget {
                   minHeight: 24,
                 )),
           ),
+          SizedBox(height: common_padding),
           TextButton.icon(
             onPressed: () {},
             icon: Icon(

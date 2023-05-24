@@ -5,6 +5,8 @@ import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/screens/start_screen.dart';
 import 'package:tomato_record/screens/home_screen.dart';
 import 'package:tomato_record/screens/splash_screen.dart';
+import 'package:tomato_record/states/user_notifier.dart';
+import 'package:tomato_record/states/user_provider.dart';
 import 'package:tomato_record/utils/logger.dart';
 
 /*final _routerDelegate = BeamerDelegate(
@@ -24,6 +26,8 @@ import 'package:tomato_record/utils/logger.dart';
   )
 );*/
 
+final UserNotifier _userNotifier = UserNotifier();
+
 final _router = GoRouter(
     routes: [
       GoRoute(
@@ -33,10 +37,12 @@ final _router = GoRouter(
           path: "/auth",
           builder: (context, state) => StartScreen()),
     ],
-    // refreshListenable: _userNotifier,
-    redirect: (state) {
-      final currentPath = state.subloc == '/auth';
-      final userState = _userNotifier.user;
+    refreshListenable: _userNotifier,
+    redirect: (context, state) {
+      // final currentPath = state.subloc == '/auth';
+      final currentPath = state.matchedLocation.contains('/auth');
+      // final userState = _userNotifier.user;
+      const userState = null;
       if (userState == null && !currentPath) {
         return '/auth';
       }
@@ -80,10 +86,13 @@ class TamoiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        // ChangeNotifierProvider<UserNotifier>.value(value: _userNotifier)
-      ],
+    return ChangeNotifierProvider<UserProvider>(
+      // providers: [
+      //   // ChangeNotifierProvider<UserNotifier>.value(value: _userNotifier)
+      // ],
+      create: (BuildContext context) {
+        return UserProvider();
+      },
       child: MaterialApp.router(
         routeInformationProvider: _router.routeInformationProvider,
         routeInformationParser: _router.routeInformationParser,
@@ -94,16 +103,17 @@ class TamoiApp extends StatelessWidget {
           hintColor: Colors.grey[350],
           textTheme: TextTheme(labelLarge: TextStyle(color: Colors.white)),
           textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.red,
-              primary: Colors.white,
-              minimumSize: Size(48,48),
-            )
-          ),
+              style: TextButton.styleFrom(
+            backgroundColor: Colors.red,
+            primary: Colors.white,
+            minimumSize: Size(48, 48),
+          )),
           appBarTheme: AppBarTheme(
-              backgroundColor: Colors.white,
-              titleTextStyle: TextStyle(color: Colors.black87),
-              elevation: 2),
+            backgroundColor: Colors.white,
+            elevation: 2,
+            titleTextStyle: TextStyle(color: Colors.black87),
+            actionsIconTheme: IconThemeData(color: Colors.black87),
+          ),
         ),
       ),
     );
