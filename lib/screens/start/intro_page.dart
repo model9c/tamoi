@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/constants/common_size.dart';
@@ -6,9 +7,8 @@ import 'package:tomato_record/utils/logger.dart';
 import 'package:provider/provider.dart';
 
 class IntroPage extends StatelessWidget {
-  PageController controller;
 
-  IntroPage(this.controller, {Key? key}) : super(key: key);
+  IntroPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +61,13 @@ class IntroPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     TextButton(
-                      onPressed: () {
-                        controller.animateToPage(1,
+                      onPressed: () async {
+                        context.read<PageController>().animateToPage(1,
                             duration: Duration(milliseconds: 500),
                             curve: Curves.ease);
                         logger.d('on text button clicked!!!');
+                        // var response = await Dio().get('https://randomuser.me/api/');
+                        // logger.d(response);
                       },
                       // style: TextButton.styleFrom(
                       //     backgroundColor: Theme.of(context).primaryColor),

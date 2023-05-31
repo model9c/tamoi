@@ -1,9 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tomato_record/constants/common_size.dart';
 import 'package:tomato_record/states/user_provider.dart';
+import 'package:tomato_record/utils/logger.dart';
 
 class AuthPage extends StatefulWidget {
   AuthPage({Key? key}) : super(key: key);
@@ -15,14 +19,9 @@ class AuthPage extends StatefulWidget {
 const duration = Duration(milliseconds: 300);
 
 class _AuthPageState extends State<AuthPage> {
-  final inputBorder =
-      OutlineInputBorder(borderSide: BorderSide(color: Colors.grey));
-
-  final TextEditingController _phoneNumberController =
-      TextEditingController(text: "010");
-
+  final inputBorder = OutlineInputBorder(borderSide: BorderSide(color: Colors.grey));
+  final TextEditingController _phoneNumberController = TextEditingController(text: "010");
   final TextEditingController _codeController = TextEditingController(text: "");
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   VerificationStatus _verificationStatus = VerificationStatus.none;
@@ -57,8 +56,9 @@ class _AuthPageState extends State<AuthPage> {
                           height: size.width * 0.15,
                         ),
                         SizedBox(width: common_sm_padding),
-                        Text(
-                            '휴대폰 번호로 가입을 할 수 있습니다.\n해당 정보는 안전하게 보관되며,\n외부에 절대 공개하지 않습니다.'),
+                        Text('휴대폰 번호로 가입을 할 수 있습니다.\n'
+                            '해당 정보는 안전하게 보관되며,\n'
+                            '외부에 절대 공개하지 않습니다.'),
                       ],
                     ),
                     SizedBox(height: common_padding),
@@ -66,8 +66,7 @@ class _AuthPageState extends State<AuthPage> {
                       controller: _phoneNumberController,
                       keyboardType: TextInputType.phone,
                       inputFormatters: [MaskedInputFormatter("000 0000 0000")],
-                      decoration: InputDecoration(
-                          focusedBorder: inputBorder, border: inputBorder),
+                      decoration: InputDecoration(focusedBorder: inputBorder, border: inputBorder),
                       validator: (phoneNumber) {
                         if (phoneNumber != null && phoneNumber.length == 13) {
                           return null; // null 을 리턴하면 오류가 없다고 판단.
@@ -82,22 +81,20 @@ class _AuthPageState extends State<AuthPage> {
                         onPressed: () {
                           if (_formKey.currentState != null) {
                             bool passed = _formKey.currentState!.validate();
-                            print(passed);
+                            logger.d(passed);
                             if (passed) {
                               setState(() {
-                                _verificationStatus =
-                                    VerificationStatus.codeSent;
+                                _verificationStatus = VerificationStatus.codeSent;
                               });
                             }
                           } else {}
+                          _getAddress();
                         },
                         child: Text("인증문자 발송")),
                     SizedBox(height: common_padding),
                     AnimatedOpacity(
                       duration: duration,
-                      opacity: (_verificationStatus == VerificationStatus.none)
-                          ? 0
-                          : 1,
+                      opacity: (_verificationStatus == VerificationStatus.none) ? 0 : 1,
                       child: AnimatedContainer(
                         duration: duration,
                         curve: Curves.easeInOut,
@@ -106,8 +103,7 @@ class _AuthPageState extends State<AuthPage> {
                           controller: _codeController,
                           keyboardType: TextInputType.phone,
                           inputFormatters: [MaskedInputFormatter("000000")],
-                          decoration: InputDecoration(
-                              focusedBorder: inputBorder, border: inputBorder),
+                          decoration: InputDecoration(focusedBorder: inputBorder, border: inputBorder),
                         ),
                       ),
                     ),
@@ -120,8 +116,7 @@ class _AuthPageState extends State<AuthPage> {
                             onPressed: () {
                               attemptVerify();
                             },
-                            child: (_verificationStatus ==
-                                    VerificationStatus.verifying)
+                            child: (_verificationStatus == VerificationStatus.verifying)
                                 ? CircularProgressIndicator(
                                     color: Colors.white,
                                   )
@@ -169,9 +164,15 @@ class _AuthPageState extends State<AuthPage> {
       _verificationStatus = VerificationStatus.verificationDone;
     });
 
-    context
-        .read<UserProvider>()
-        .setUserAuth(true); //notify 함수를 호출할 경우에는 무조건 read로 호출.
+    context.read<UserProvider>().setUserAuth(true);
+    //notify 함수를 호출할 경우에는 무조건 read로 호출.
+  }
+
+  _getAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String address = prefs.getString('address')??"";
+    String zipcode = prefs.getString('zipcode')??"";
+    logger.d('address from shared pref - $address and zipcode - $zipcode' );
   }
 }
 

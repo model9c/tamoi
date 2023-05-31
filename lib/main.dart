@@ -9,40 +9,21 @@ import 'package:tomato_record/states/user_notifier.dart';
 import 'package:tomato_record/states/user_provider.dart';
 import 'package:tomato_record/utils/logger.dart';
 
-/*final _routerDelegate = BeamerDelegate(
-  guards: [
-    BeamGuard(
-      pathPatterns: ['/'],
-      check: (context, location){
-        return false;
-      },
-      showPage: BeamPage(
-        child: AuthScreen()
-      )
-    )
-  ],
-  locationBuilder: BeamerLocationBuilder(
-    beamLocations: [HomeLocation()]
-  )
-);*/
-
 final UserNotifier _userNotifier = UserNotifier();
 
 final _router = GoRouter(
     routes: [
-      GoRoute(
-          name: "home", path: "/", builder: (context, state) => HomeScreen()),
-      GoRoute(
-          name: "auth",
-          path: "/auth",
-          builder: (context, state) => StartScreen()),
+      GoRoute(name: "home", path: "/", builder: (context, state) => HomeScreen()),
+      GoRoute(name: "auth", path: "/auth", builder: (context, state) => StartScreen()),
     ],
     refreshListenable: _userNotifier,
     redirect: (context, state) {
       // final currentPath = state.subloc == '/auth';
       final currentPath = state.matchedLocation.contains('/auth');
       // final userState = _userNotifier.user;
-      const userState = null;
+      // const userState = null;
+      const userState = 'make main paging...';
+
       if (userState == null && !currentPath) {
         return '/auth';
       }
@@ -53,7 +34,10 @@ final _router = GoRouter(
     });
 
 void main() {
-  logger.d('My first Logger!!');
+  logger.d('start logger');
+  Provider.debugCheckInvalidValueType = null; // provider 사용 시
+  // provicer 데이터가 변경이 될 깨 변경된 것에 따라 하위 위젯의 모양을 상태에 맞게 변경해서 전달해주기 위해서 사용.
+  // 숫자를 바꾸는건 pageController가 알아서 핸들링을 하고 pageController Object는 변경될 것이 없음.
   runApp(MyApp());
 }
 
@@ -63,15 +47,13 @@ class MyApp extends StatelessWidget {
     return FutureBuilder(
         future: Future.delayed(const Duration(milliseconds: 300), () => 100),
         builder: (context, snapshot) {
-          return AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: _splashLoadingWidget(snapshot));
+          return AnimatedSwitcher(duration: const Duration(milliseconds: 300), child: _splashLoadingWidget(snapshot));
         });
   }
 
   StatelessWidget _splashLoadingWidget(AsyncSnapshot<Object?> snapshot) {
     if (snapshot.hasError) {
-      print('error occur while loading.');
+      logger.d('error occur while loading.');
       return const Text('error occur.');
     } else if (snapshot.hasData) {
       return const TamoiApp();
@@ -98,22 +80,27 @@ class TamoiApp extends StatelessWidget {
         routeInformationParser: _router.routeInformationParser,
         routerDelegate: _router.routerDelegate,
         theme: ThemeData(
-          primarySwatch: Colors.amber,
-          fontFamily: 'Jalnan',
-          hintColor: Colors.grey[350],
-          textTheme: TextTheme(labelLarge: TextStyle(color: Colors.white)),
-          textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-            backgroundColor: Colors.red,
-            primary: Colors.white,
-            minimumSize: Size(48, 48),
-          )),
-          appBarTheme: AppBarTheme(
-            backgroundColor: Colors.white,
-            elevation: 2,
-            titleTextStyle: TextStyle(color: Colors.black87),
-            actionsIconTheme: IconThemeData(color: Colors.black87),
-          ),
+            fontFamily: 'Jalnan',
+            primarySwatch: Colors.amber,
+            hintColor: Colors.grey[350],
+            textTheme: TextTheme(labelLarge: TextStyle(color: Colors.white)),
+            textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+              backgroundColor: Colors.red,
+              primary: Colors.white,
+              minimumSize: Size(48, 48),
+            )),
+            appBarTheme: AppBarTheme(
+              backgroundColor: Colors.white,
+              elevation: 2,
+              titleTextStyle: TextStyle(color: Colors.black87),
+              actionsIconTheme: IconThemeData(color: Colors.black87),
+            ),
+            bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                // backgroundColor: Colors.black87, //Bar의 배경색
+                selectedItemColor: Colors.black87, //선택 안된 아이템의 색상
+                unselectedItemColor: Colors.black54 //선택된 아이템의 색상
+            )
         ),
       ),
     );
