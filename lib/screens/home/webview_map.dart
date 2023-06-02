@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tomato_record/utils/logger.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebviewMap extends StatefulWidget {
@@ -16,19 +17,23 @@ class _WebviewMapState extends State<WebviewMap> {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(
+        Uri.parse('http://www.tamoimap.com/fm/index.php?flag=9'),
+        // Uri.parse('https://www.tamoi.co.kr'),
+      )
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
-            debugPrint('WebView is loading (progress : $progress%)');
+            logger.d('WebView is loading (progress : $progress%)');
           },
           onPageStarted: (String url) {
-            debugPrint('Page started loading: $url');
+            logger.d('Page started loading: $url');
           },
           onPageFinished: (String url) {
-            debugPrint('Page finished loading: $url');
+            logger.d('Page finished loading: $url');
           },
           onWebResourceError: (WebResourceError error) {
-            debugPrint('''
+            logger.d('''
 Page resource error:
   code: ${error.errorCode}
   description: ${error.description}
@@ -37,21 +42,17 @@ Page resource error:
           ''');
           },
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              debugPrint('blocking navigation to ${request.url}');
-              return NavigationDecision.prevent;
-            }
-            debugPrint('allowing navigation to ${request.url}');
+            // if (request.url.startsWith('https://www.youtube.com/')) {
+            //   logger.d('blocking navigation to ${request.url}');
+            //   return NavigationDecision.prevent;
+            // }  // URL 제한을 걸 수 있음
+            logger.d('allowing navigation to ${request.url}');
             return NavigationDecision.navigate;
           },
           onUrlChange: (UrlChange change) {
-            debugPrint('url change to ${change.url}');
+            logger.d('url change to ${change.url}');
           },
         ),
-      )
-      ..loadRequest(
-        // Uri.parse('http://www.tamoimap.com/fm/'),
-        Uri.parse('https://www.tamoi.co.kr'),
       );
   }
 

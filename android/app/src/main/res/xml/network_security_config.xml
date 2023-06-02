@@ -9,4 +9,13 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">youtu.be</domain>
     </domain-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">daumcdn.net</domain>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">kakao.com</domain>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">google-analytics.com</domain>
+    </domain-config>
 </network-security-config>

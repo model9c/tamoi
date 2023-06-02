@@ -83,7 +83,11 @@ class TamoiApp extends StatelessWidget {
             fontFamily: 'Jalnan',
             primarySwatch: Colors.amber,
             hintColor: Colors.grey[350],
-            textTheme: TextTheme(labelLarge: TextStyle(color: Colors.white)),
+            textTheme: TextTheme(
+              labelLarge: TextStyle(color: Colors.white),
+              bodyLarge: TextStyle(color: Colors.black87, fontSize: 15),
+              bodyMedium: TextStyle(color: Colors.grey, fontSize: 13),
+            ),
             textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
               backgroundColor: Colors.red,
@@ -100,8 +104,7 @@ class TamoiApp extends StatelessWidget {
                 // backgroundColor: Colors.black87, //Bar의 배경색
                 selectedItemColor: Colors.black87, //선택 안된 아이템의 색상
                 unselectedItemColor: Colors.black54 //선택된 아이템의 색상
-            )
-        ),
+                )),
       ),
     );
   }
